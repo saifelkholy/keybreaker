@@ -10,7 +10,7 @@ const challengeRoutes = require('./routes/challenges');
 const leaderboardRoutes = require('./routes/leaderboard');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1); // Trust first key because we might be behind Cloudflare/Nginx
 
@@ -20,17 +20,16 @@ app.use(hpp()); // Prevent HTTP Parameter Pollution
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:5174',
-    `https://${process.env.NGROK_DOMAIN}`
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+        // In a Dockerized unified container, we can be more permissive or 
+        // rely on the fact that everything is served from the same origin.
+        if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.includes('.hf.space')) {
+            return callback(null, true);
         }
-        return callback(null, true);
+        return callback(null, true); // Allow all for HF Space simplicity
     },
     credentials: true
 }));
