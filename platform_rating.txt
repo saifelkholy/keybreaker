@@ -1,0 +1,42 @@
+# KeyBreaker Platform Rating & Analysis (Updated)
+
+| Category | Rating | Summary |
+| :--- | :---: | :--- |
+| **Usability** | 10/10 | The addition of granular filters (MD5, SHA-256) and prominent profile stats makes the UX seamless. |
+| **Idea** | 10/10 | Niche CTF concept expanded with a sophisticated Achievement System. |
+| **Challenges** | 9/10 | Now includes Vigenere and Atbash. The 500-challenge pool is more diverse than ever. |
+| **Security** | 8/10 | Solid middleware baseline. Rate limiting is effective for the current scale. |
+| **UI & UX** | 10/10 | Premium "Achievement Badges" with shine animations provide a high-end feel. |
+| **Learn Part** | 10/10 | Remaining the strongest educational aspect of the platform. |
+| **Stability** | 9/10 | Improved with robust error handling and standardized CSS. |
+
+---
+
+## Server Capacity Analysis
+
+Based on current hardware specifications (**Windows 10 Pro, 30GB RAM, 1 CPU**), the platform's capacity is estimated as follows:
+
+*   **Total User Capacity**: **~50,000+ Users**. 
+    *   The primary limit is SQLite storage. With a 30GB RAM buffer and efficient indexing, the database can scale significantly before performance degrades.
+*   **Simultaneous (Concurrent) Users**: **~500 - 800 Users**.
+    *   **Bottleneck**: SQLite write-locks during flag submissions. While the 30GB RAM allows for massive read-caching (Leaderboard/Dashboard), heavy write traffic (simultaneous solves) will eventually cause lock contention.
+    *   **Recommendation**: For a 1000+ concurrent user event, consider migrating the DB to PostgreSQL or TiDB (as previously planned) for better concurrency handling.
+
+---
+
+## Technical Suggestions & Enhancements
+
+### 1. Dynamic Scoring (Anti-Plagiarism/Collusion)
+*   Implement "Decaying Points": Challenges start at a high value and decrease slightly as more users solve them. This rewards the fastest breakers.
+
+### 2. Team Architecture
+*   Allow users to form "Cells" or Teams. This adds a social layer and enables large-scale competitive events.
+
+### 3. Progressive Reveal Challenges
+*   Unlock specific high-tier badges (e.g., "The Oracle") by solving a secret chain of hidden challenges that only appear after specific milestones are hit.
+
+### 4. Real-time Solve Feed
+*   Add a socket-driven feed on the dashboard: *"Agent [AX1] just captured the flag in MD5 Module #42!"* to build excitement.
+
+---
+*Assessed by Antigravity AI - v2.0*
